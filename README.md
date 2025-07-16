@@ -149,55 +149,10 @@ export default function App(){ const[dark,setDark]=useState(false);
     }
   ]
 }
-```json
-// src/engine/config/manifest.json
-{ "opencore": {"url":".../OpenCore-0.8.0.zip","checksum":"<SHA256>"},"kexts":[{...}]}
-````
-
-### 3.2 Scan Hardware
-
-```ts
-// src/engine/detect/hardware.ts
-import si from'systeminformation';import fs from'fs-extra';
-export async function scanHardware(){ const[ cpu,gpu,mem,storage,net ]=await Promise.all([si.cpu(),si.graphics(),si.mem(),si.blockDevices(),si.networkInterfaces()]);
-  const info={cpu,gpu,memory:mem,storage,network:net};
-  await fs.outputJson('cache/hardware.json',info,{spaces:2});
-  return info;
-}
-```
-
-### 3.3 Download & Checksum
-
-```ts
-// src/engine/utils/downloader.ts
-import https from'https';import fs from'fs-extra';import crypto from'crypto';import path from'path';
-export async function downloadFile(u,d){ await fs.ensureDir(path.dirname(d)); return new Promise((res,rej)=>{https.get(u,r=>{const f=fs.createWriteStream(d);r.pipe(f);f.on('finish',()=>f.close(res));}).on('error',rej);});}
-export function verifyChecksum(f,e){const sum=crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');if(sum!==e)throw new Error('Checksum mismatch');}
-```
-
-### 3.4 Generate Config
-
-```ts
-// src/engine/config/generator.ts
-import fs from'fs-extra';import path from'path';import{HardwareInfo}from'../detect/hardware';
-export function generateConfig(hw:HardwareInfo){ const tpl=fs.readFileSync(path.resolve(__dirname,'template.plist'),'utf-8'); const model=hw.cpu.brand.includes('Intel')?'MacBookPro15,1':'iMac19,1'; const out=tpl.replace(/{{systemProductName}}/,model); fs.ensureDirSync('cache/components/EFI/OC'); fs.writeFileSync('cache/components/EFI/OC/config.plist',out); }
-```
-
----
-
-## Giai đoạn 4: Bundle EFI & Packaging (Tuần 5–6)
-
-### 4.1 bundleEFI & Snapshot
-
-```ts
-// src/engine/build/bundle.ts
-import fs from'fs-extra'; export async function bundleEFI(){ await fs.remove('dist/EFI'); await fs.copy('cache/components/EFI/OC','dist/EFI'); return 'dist/EFI'; }
-```
-
 ```ts
 // src/engine/utils/snapshot.ts
 import fs from'fs-extra'; export function snapshotEFI(){ const dest=`backups/EFI-${Date.now()}`; fs.copySync('dist/EFI',dest); return dest; } export function restoreEFI(s:string){ fs.removeSync('dist/EFI'); fs.copySync(s,'dist/EFI'); }
-```
+````
 
 ### 4.2 IPC & BuildStep UI
 
