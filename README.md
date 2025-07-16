@@ -129,10 +129,30 @@ export default function App(){ const[dark,setDark]=useState(false);
 
 ### 3.1 manifest.json
 
+````json
+// src/engine/config/manifest.json
+{
+  "opencore": {
+    "url": "https://github.com/acidanthera/OpenCorePkg/releases/download/0.8.0/OpenCore-0.8.0.zip",
+    "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "kexts": [
+    {
+      "name": "Lilu.kext",
+      "url": "https://github.com/acidanthera/Lilu/releases/download/1.5.3/Lilu.kext.zip",
+      "checksum": "a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef"
+    },
+    {
+      "name": "WhateverGreen.kext",
+      "url": "https://github.com/acidanthera/WhateverGreen/releases/download/1.5.3/WhateverGreen.kext.zip",
+      "checksum": "f1e2d3c4b5a6978801234567890abcdef1234567890abcdef1234567890abcde"
+    }
+  ]
+}
 ```json
 // src/engine/config/manifest.json
 { "opencore": {"url":".../OpenCore-0.8.0.zip","checksum":"<SHA256>"},"kexts":[{...}]}
-```
+````
 
 ### 3.2 Scan Hardware
 
