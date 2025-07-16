@@ -129,7 +129,7 @@ export default function App(){ const[dark,setDark]=useState(false);
 
 ### 3.1 manifest.json
 
-````json
+```json
 // src/engine/config/manifest.json
 {
   "opencore": {
@@ -149,12 +149,25 @@ export default function App(){ const[dark,setDark]=useState(false);
     }
   ]
 }
+```
+
 ```ts
 // src/engine/utils/snapshot.ts
-import fs from'fs-extra'; export function snapshotEFI(){ const dest=`backups/EFI-${Date.now()}`; fs.copySync('dist/EFI',dest); return dest; } export function restoreEFI(s:string){ fs.removeSync('dist/EFI'); fs.copySync(s,'dist/EFI'); }
-````
+import fs from 'fs-extra';
 
-### 4.2 IPC & BuildStep UI
+export function snapshotEFI(): string {
+  const dest = `backups/EFI-backup-${Date.now()}`;
+  fs.copySync('dist/EFI', dest);
+  return dest;
+}
+
+export function restoreEFI(src: string): void {
+  fs.removeSync('dist/EFI');
+  fs.copySync(src, 'dist/EFI');
+}
+```
+
+### 4.2 IPC & BuildStep UI.2 IPC & BuildStep UI
 
 ```ts
 // src/main/index.ts
