@@ -132,19 +132,19 @@ export default function App(){ const[dark,setDark]=useState(false);
 ```json
 {
   "opencore": {
-    "url": "https://github.com/acidanthera/OpenCorePkg/releases/download/0.8.0/OpenCore-0.8.0.zip",
-    "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    "url": "https://github.com/acidanthera/OpenCorePkg/releases/download/1.0.5/OpenCore-1.0.5-RELEASE.zip",
+    "checksum": "sha256:2608743afe81001114a85b6fba6555edbc43813b82538e1f70220aeb0662d8be"
   },
   "kexts": [
     {
       "name": "Lilu.kext",
-      "url": "https://github.com/acidanthera/Lilu/releases/download/1.5.3/Lilu.kext.zip",
-      "checksum": "a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef"
+      "url": "https://github.com/acidanthera/Lilu/releases/download/1.7.1/Lilu-1.7.1-RELEASE.zip",
+      "checksum": "sha256:a2c8cf8db59bcbb725b24782b7b75a5f3779fc4eb514d5cec21803b7e14902c3"
     },
     {
       "name": "WhateverGreen.kext",
-      "url": "https://github.com/acidanthera/WhateverGreen/releases/download/1.5.3/WhateverGreen.kext.zip",
-      "checksum": "f1e2d3c4b5a6978801234567890abcdef1234567890abcdef1234567890abcde"
+      "url": "https://github.com/acidanthera/WhateverGreen/releases/download/1.7.0/WhateverGreen-1.7.0-RELEASE.zip",
+      "checksum": "sha256:6d6ffe8334ad60f784a662794e67b2560b79d757d506841dc8ca9994ab39979b"
     }
   ]
 }
