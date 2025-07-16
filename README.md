@@ -129,64 +129,57 @@ export default function App(){ const[dark,setDark]=useState(false);
 
 ### 3.1 manifest.json
 
-````json
-{
-  "opencore": {
-    "url": "https://github.com/acidanthera/OpenCorePkg/releases/download/0.8.0/OpenCore-0.8.0.zip",
-    "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-  },
-  "kexts": [
-    {
-      "name": "Lilu.kext",
-      "url": "https://github.com/acidanthera/Lilu/releases/download/1.5.3/Lilu.kext.zip",
-      "checksum": "a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef"
-    },
-    {
-      "name": "WhateverGreen.kext",
-      "url": "https://github.com/acidanthera/WhateverGreen/releases/download/1.5.3/WhateverGreen.kext.zip",
-      "checksum": "f1e2d3c4b5a6978801234567890abcdef1234567890abcdef1234567890abcde"
-    }
-  ]
-}
 ```json
 // src/engine/config/manifest.json
-{
-  "opencore": {
-    "url": "https://github.com/acidanthera/OpenCorePkg/releases/download/0.8.0/OpenCore-0.8.0.zip",
-    "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-  },
-  "kexts": [
-    {
-      "name": "Lilu.kext",
-      "url": "https://github.com/acidanthera/Lilu/releases/download/1.5.3/Lilu.kext.zip",
-      "checksum": "a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef"
-    },
-    {
-      "name": "WhateverGreen.kext",
-      "url": "https://github.com/acidanthera/WhateverGreen/releases/download/1.5.3/WhateverGreen.kext.zip",
-      "checksum": "f1e2d3c4b5a6978801234567890abcdef1234567890abcdef1234567890abcde"
-    }
-  ]
-}
-````
+{ "opencore": {"url":".../OpenCore-0.8.0.zip","checksum":"<SHA256>"},"kexts":[{...}]}
+```
+
+### 3.2 Scan Hardware
 
 ```ts
-// src/engine/utils/snapshot.ts
-import fs from 'fs-extra';
-
-export function snapshotEFI(): string {
-  const dest = `backups/EFI-backup-${Date.now()}`;
-  fs.copySync('dist/EFI', dest);
-  return dest;
-}
-
-export function restoreEFI(src: string): void {
-  fs.removeSync('dist/EFI');
-  fs.copySync(src, 'dist/EFI');
+// src/engine/detect/hardware.ts
+import si from'systeminformation';import fs from'fs-extra';
+export async function scanHardware(){ const[ cpu,gpu,mem,storage,net ]=await Promise.all([si.cpu(),si.graphics(),si.mem(),si.blockDevices(),si.networkInterfaces()]);
+  const info={cpu,gpu,memory:mem,storage,network:net};
+  await fs.outputJson('cache/hardware.json',info,{spaces:2});
+  return info;
 }
 ```
 
-### 4.2 IPC & BuildStep UI.2 IPC & BuildStep UI
+### 3.3 Download & Checksum
+
+```ts
+// src/engine/utils/downloader.ts
+import https from'https';import fs from'fs-extra';import crypto from'crypto';import path from'path';
+export async function downloadFile(u,d){ await fs.ensureDir(path.dirname(d)); return new Promise((res,rej)=>{https.get(u,r=>{const f=fs.createWriteStream(d);r.pipe(f);f.on('finish',()=>f.close(res));}).on('error',rej);});}
+export function verifyChecksum(f,e){const sum=crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');if(sum!==e)throw new Error('Checksum mismatch');}
+```
+
+### 3.4 Generate Config
+
+```ts
+// src/engine/config/generator.ts
+import fs from'fs-extra';import path from'path';import{HardwareInfo}from'../detect/hardware';
+export function generateConfig(hw:HardwareInfo){ const tpl=fs.readFileSync(path.resolve(__dirname,'template.plist'),'utf-8'); const model=hw.cpu.brand.includes('Intel')?'MacBookPro15,1':'iMac19,1'; const out=tpl.replace(/{{systemProductName}}/,model); fs.ensureDirSync('cache/components/EFI/OC'); fs.writeFileSync('cache/components/EFI/OC/config.plist',out); }
+```
+
+---
+
+## Giai đoạn 4: Bundle EFI & Packaging (Tuần 5–6)
+
+### 4.1 bundleEFI & Snapshot
+
+```ts
+// src/engine/build/bundle.ts
+import fs from'fs-extra'; export async function bundleEFI(){ await fs.remove('dist/EFI'); await fs.copy('cache/components/EFI/OC','dist/EFI'); return 'dist/EFI'; }
+```
+
+```ts
+// src/engine/utils/snapshot.ts
+import fs from'fs-extra'; export function snapshotEFI(){ const dest=`backups/EFI-${Date.now()}`; fs.copySync('dist/EFI',dest); return dest; } export function restoreEFI(s:string){ fs.removeSync('dist/EFI'); fs.copySync(s,'dist/EFI'); }
+```
+
+### 4.2 IPC & BuildStep UI
 
 ```ts
 // src/main/index.ts
