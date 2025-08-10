@@ -3,280 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Hiệu ứng Trái Tim Hồng</title>
+  <title>Trái Tim Hồng - Giao diện tối</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Đổi font chữ sang Pacifico cho tiêu đề mềm mại hơn -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Màu hồng sặc sỡ mặc định: h=330°, s=100%, l=55% */
       --hue: 330;
-      --sat: 100; /* 0–100 */
-      --light: 55; /* 0–100 */
-      --heart-color: hsl(var(--hue), var(--sat)%, var(--light)%);
-      --bg1: hsl(calc(var(--hue) - 12), 95%, 94%);
-      --bg2: hsl(calc(var(--hue) + 8), 85%, 98%);
-      --text: #1f1f1f;
-      --panel-bg: rgba(255,255,255,.7);
-      --shadow: 0 10px 30px rgba(0,0,0,.12);
+      --sat: 100;
+      --light: 65;
+      --heart: hsl(var(--hue), var(--sat)%, var(--light)%);
+      --bg1: hsl(300, 30%, 15%);
+      --bg2: hsl(320, 25%, 10%);
+      --text: #f5f5f5;
+      --shadow: 0 10px 30px rgba(0,0,0,.6);
     }
-
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      color: var(--text);
-      overflow: hidden; /* không scroll khi tim bay */
+    html, body {
+      height: 100%; margin: 0; font-family: 'Pacifico', cursive; color: var(--text); overflow: hidden;
       background: radial-gradient(1200px 800px at 20% 10%, var(--bg2), transparent),
                   radial-gradient(1200px 800px at 100% 100%, var(--bg1), transparent),
-                  linear-gradient(135deg, #fff, #fff);
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
     }
-
-    .wrap {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-    }
-
-    /* Tiêu đề tên ở giữa */
+    .wrap { position: relative; width: 100%; height: 100%; display: grid; place-items: center; }
     .hero {
-      position: relative;
-      text-align: center;
-      z-index: 2;
-      padding: 24px 28px;
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.35));
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
+      position: relative; text-align: center; z-index: 2; padding: 28px 34px; border-radius: 28px;
+      background: linear-gradient(180deg, rgba(30,30,30,.85), rgba(60,60,60,.35));
+      backdrop-filter: blur(10px); box-shadow: var(--shadow);
     }
-
     .name {
-      font-family: Pacifico, cursive;
-      font-size: clamp(42px, 8vw, 84px);
-      line-height: 1.05;
+      font-size: clamp(48px, 9vw, 96px);
+      color: var(--heart);
+      text-shadow: 0 2px 10px rgba(0,0,0,.8);
       margin: 0;
-      color: var(--heart-color);
-      text-shadow: 0 2px 0 rgba(0,0,0,.06);
     }
 
-    .subtitle {
-      margin: 6px 0 0 0;
-      font-size: clamp(14px, 2.4vw, 18px);
-      opacity: .75;
-    }
-
-    /* Panel điều khiển */
-    .panel {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 18px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-      background: var(--panel-bg);
-      padding: 12px 14px;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      z-index: 3;
-    }
-
-    .control { display: grid; gap: 6px; }
-    .control label { font-size: 12px; opacity: .9; }
-    .control input[type="text"] {
-      padding: 10px 12px;
-      border: 1px solid #e6e6e6;
-      border-radius: 12px;
-      min-width: 200px;
-      outline: none;
-    }
-    .control input[type="range"] { width: 180px; }
-    .btn {
-      border: 0;
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      background: var(--heart-color);
-      color: #fff;
-      box-shadow: 0 6px 16px rgba(255, 20, 147, .35);
-    }
-
-    /* Lớp trái tim bay */
-    .stage {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      z-index: 1;
-      pointer-events: none;
-    }
-
+    .stage { position: absolute; inset: 0; overflow: hidden; z-index: 1; pointer-events: none; }
     .heart {
-      position: absolute;
-      width: var(--size);
-      height: var(--size);
-      left: var(--x);
-      bottom: -80px;
-      transform: rotate(45deg);
-      background: var(--heart-color);
-      box-shadow: 0 8px 20px rgba(0,0,0,.15);
-      border-radius: 6px;
-      opacity: var(--opacity, .9);
+      position: absolute; left: var(--x); bottom: -80px; width: var(--size); height: var(--size);
+      opacity: var(--opacity, .95);
       animation: float var(--dur) linear forwards;
+      filter: drop-shadow(0 8px 24px rgba(255, 20, 147, .55)) drop-shadow(0 0 22px rgba(255,0,120,.35));
     }
-    .heart::before,
-    .heart::after {
-      content: "";
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background: var(--heart-color);
-      border-radius: 50%;
-    }
-    .heart::before { left: -50%; }
-    .heart::after  { top: -50%; }
-
     @keyframes float {
-      0% { transform: translateY(0) rotate(45deg) scale(1); filter: drop-shadow(0 8px 20px rgba(0,0,0,.15)); }
-      70% { transform: translateY(-80vh) rotate(45deg) scale(1.05); }
-      100% { transform: translateY(-120vh) rotate(45deg) scale(1.1); opacity: 0; }
-    }
-
-    /* Lấp lánh nhẹ trên nền */
-    .sparkle {
-      position: absolute; inset: 0; z-index: 0; pointer-events: none;
-      background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,.6) 0 1px, transparent 2px),
-                        radial-gradient(circle at 60% 70%, rgba(255,255,255,.5) 0 1px, transparent 2px),
-                        radial-gradient(circle at 90% 30%, rgba(255,255,255,.6) 0 1px, transparent 2px);
-      background-size: 200px 200px;
-      animation: twinkle 4s ease-in-out infinite;
-    }
-    @keyframes twinkle {
-      0%,100% { opacity: .25 }
-      50% { opacity: .5 }
-    }
-
-    /* Responsive nhỏ gọn trên mobile */
-    @media (max-width: 560px) {
-      .panel { left: 12px; right: 12px; transform: none; }
-      .control input[type="text"] { min-width: 0; width: min(70vw, 280px); }
+      0% { transform: translateY(0) scale(1); }
+      70% { transform: translateY(-80vh) scale(1.05); }
+      100% { transform: translateY(-120vh) scale(1.12); opacity: 0; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="sparkle" aria-hidden="true"></div>
     <div class="stage" id="stage" aria-hidden="true"></div>
-
     <section class="hero">
-      <h1 class="name" id="displayName">Trái tim hồng</h1>
-      <p class="subtitle">Tuỳ chỉnh tên & độ sặc sỡ ↓</p>
+      <h1 class="name" id="displayName">Trần Đức Cường</h1>
     </section>
-
-    <form class="panel" id="controls" onsubmit="return false;">
-      <div class="control">
-        <label for="name">Tên hiển thị</label>
-        <input id="name" type="text" placeholder="Nhập tên..." />
-      </div>
-      <div class="control">
-        <label for="saturation">Độ sặc sỡ (Saturation)</label>
-        <input id="saturation" type="range" min="50" max="100" value="100" />
-      </div>
-      <div class="control">
-        <label for="light">Độ sáng (Lightness)</label>
-        <input id="light" type="range" min="40" max="70" value="55" />
-      </div>
-      <button class="btn" id="apply">Áp dụng</button>
-      <button class="btn" type="button" id="spawn">Bắn tim</button>
-    </form>
   </div>
-
   <script>
-    const displayName = document.getElementById('displayName');
-    const nameInput = document.getElementById('name');
-    const satInput = document.getElementById('saturation');
-    const lightInput = document.getElementById('light');
-    const applyBtn = document.getElementById('apply');
-    const spawnBtn = document.getElementById('spawn');
     const stage = document.getElementById('stage');
-
-    // Cập nhật biến màu toàn cục
-    function updateColor() {
-      const sat = +satInput.value;
-      const light = +lightInput.value;
-      document.documentElement.style.setProperty('--sat', sat);
-      document.documentElement.style.setProperty('--light', light);
+    function createSvgHeart() {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 32 29');
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M23.6 0c-2.5 0-4.7 1.3-7.6 4.1C13.1 1.3 10.9 0 8.4 0 3.8 0 0 3.8 0 8.4c0 9.2 12.1 15.3 15.1 20.2.3.5.5.4.8 0C18.9 23.7 32 17.6 32 8.4 32 3.8 28.2 0 23.6 0z');
+      path.setAttribute('fill', 'currentColor');
+      svg.appendChild(path);
+      return svg;
     }
-
-    // Áp dụng tên + màu
-    applyBtn.addEventListener('click', () => {
-      if (nameInput.value.trim()) {
-        displayName.textContent = nameInput.value.trim();
-      }
-      updateColor();
-      // nổ một loạt tim khi áp dụng
-      burstHearts(18);
-    });
-
-    // Nút bắn tim thêm
-    spawnBtn.addEventListener('click', () => burstHearts(12));
-
-    // Tim bay ngẫu nhiên liên tục nền
-    let autoTimer = null;
-    function startAutoHearts() {
-      if (autoTimer) return;
-      autoTimer = setInterval(() => spawnHeart(), 400);
+    function spawnHeart(x = Math.random() * 100, yFromBottomPx = -80) {
+      const wrap = document.createElement('div');
+      wrap.className = 'heart';
+      const size = Math.random() * 22 + 14;
+      const dur = Math.random() * 3 + 6;
+      const op = Math.random() * 0.35 + 0.65;
+      wrap.style.setProperty('--size', size + 'px');
+      wrap.style.setProperty('--dur', dur + 's');
+      wrap.style.setProperty('--opacity', op);
+      wrap.style.setProperty('--x', x + 'vw');
+      wrap.style.bottom = yFromBottomPx + 'px';
+      wrap.style.color = getComputedStyle(document.documentElement).getPropertyValue('--heart').trim();
+      wrap.appendChild(createSvgHeart());
+      stage.appendChild(wrap);
+      setTimeout(() => wrap.remove(), (dur + 0.2) * 1000);
     }
-    function stopAutoHearts() {
-      clearInterval(autoTimer); autoTimer = null;
-    }
-
-    // Tạo 1 trái tim
-    function spawnHeart(x = Math.random() * 100) {
-      const h = document.createElement('div');
-      h.className = 'heart';
-      const size = Math.random() * 18 + 10; // 10–28px
-      const dur = Math.random() * 3 + 6;    // 6–9s
-      const op = Math.random() * 0.35 + 0.65; // 0.65–1.0
-      h.style.setProperty('--size', size + 'px');
-      h.style.setProperty('--dur', dur + 's');
-      h.style.setProperty('--opacity', op);
-      h.style.setProperty('--x', x + 'vw');
-      stage.appendChild(h);
-      // tự xoá khi kết thúc
-      setTimeout(() => h.remove(), (dur + 0.2) * 1000);
-    }
-
-    function burstHearts(n = 16) {
-      const center = 50;
+    function burstHearts(n = 16, center = 50) {
       for (let i = 0; i < n; i++) {
-        const spread = (Math.random() - 0.5) * 40; // -20 đến 20 vw
+        const spread = (Math.random() - 0.5) * 40;
         setTimeout(() => spawnHeart(center + spread), i * 60);
       }
     }
-
-    // Bắt đầu
-    startAutoHearts();
-
-    // Chỉnh ngay màu vivid mặc định
-    updateColor();
-
-    // UX: Enter để áp dụng
-    nameInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        applyBtn.click();
-      }
-    });
-
-    // Giảm/ tăng tim khi tab mờ/hiện để tiết kiệm tài nguyên
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stopAutoHearts(); else startAutoHearts();
-    });
+    setInterval(() => spawnHeart(), 420);
+    burstHearts(22);
   </script>
 </body>
 </html>
